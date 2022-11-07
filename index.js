@@ -3,8 +3,8 @@ const c = canvas.getContext('2d')
 
 const scoreEl = document.querySelector('#scoreEl')
 
-canvas.width = innerWidth
-canvas.height = innerHeight
+canvas.width = 440
+canvas.height = 572
 
 class Boundary {
   static width = 40
@@ -129,48 +129,48 @@ const ghosts = [
   new Ghost({
     position: {
       x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height + Boundary.height / 2
+      y: Boundary.height + Boundary.height / 2,
     },
     velocity: {
       x: Ghost.speed,
-      y: 0
-    }
+      y: 0,
+    },
   }),
   new Ghost({
     position: {
       x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height * 3 + Boundary.height / 2
+      y: Boundary.height * 3 + Boundary.height / 2,
     },
     velocity: {
       x: Ghost.speed,
-      y: 0
+      y: 0,
     },
-    color: 'pink'
-  })
+    color: 'pink',
+  }),
 ]
 const player = new Player({
   position: {
     x: Boundary.width + Boundary.width / 2,
-    y: Boundary.height + Boundary.height / 2
+    y: Boundary.height + Boundary.height / 2,
   },
   velocity: {
     x: 0,
-    y: 0
-  }
+    y: 0,
+  },
 })
 const keys = {
   w: {
-    pressed: false
+    pressed: false,
   },
   a: {
-    pressed: false
+    pressed: false,
   },
   s: {
-    pressed: false
+    pressed: false,
   },
   d: {
-    pressed: false
-  }
+    pressed: false,
+  },
 }
 
 let lastKey = ''
@@ -189,7 +189,7 @@ const map = [
   ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
   ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
   ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
-  ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3']
+  ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3'],
 ]
 
 function createImage(src) {
@@ -206,9 +206,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/pipeHorizontal.png')
+            image: createImage('./img/pipeHorizontal.png'),
           })
         )
         break
@@ -217,9 +217,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/pipeVertical.png')
+            image: createImage('./img/pipeVertical.png'),
           })
         )
         break
@@ -228,9 +228,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/pipeCorner1.png')
+            image: createImage('./img/pipeCorner1.png'),
           })
         )
         break
@@ -239,9 +239,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/pipeCorner2.png')
+            image: createImage('./img/pipeCorner2.png'),
           })
         )
         break
@@ -250,9 +250,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/pipeCorner3.png')
+            image: createImage('./img/pipeCorner3.png'),
           })
         )
         break
@@ -261,9 +261,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/pipeCorner4.png')
+            image: createImage('./img/pipeCorner4.png'),
           })
         )
         break
@@ -272,9 +272,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: Boundary.width * j,
-              y: Boundary.height * i
+              y: Boundary.height * i,
             },
-            image: createImage('./img/block.png')
+            image: createImage('./img/block.png'),
           })
         )
         break
@@ -283,9 +283,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
-            image: createImage('./img/capLeft.png')
+            image: createImage('./img/capLeft.png'),
           })
         )
         break
@@ -294,9 +294,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
-            image: createImage('./img/capRight.png')
+            image: createImage('./img/capRight.png'),
           })
         )
         break
@@ -305,9 +305,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
-            image: createImage('./img/capBottom.png')
+            image: createImage('./img/capBottom.png'),
           })
         )
         break
@@ -316,9 +316,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
-            image: createImage('./img/capTop.png')
+            image: createImage('./img/capTop.png'),
           })
         )
         break
@@ -327,9 +327,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
-            image: createImage('./img/pipeCross.png')
+            image: createImage('./img/pipeCross.png'),
           })
         )
         break
@@ -338,10 +338,10 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
             color: 'blue',
-            image: createImage('./img/pipeConnectorTop.png')
+            image: createImage('./img/pipeConnectorTop.png'),
           })
         )
         break
@@ -350,10 +350,10 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
             color: 'blue',
-            image: createImage('./img/pipeConnectorRight.png')
+            image: createImage('./img/pipeConnectorRight.png'),
           })
         )
         break
@@ -362,10 +362,10 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
             color: 'blue',
-            image: createImage('./img/pipeConnectorBottom.png')
+            image: createImage('./img/pipeConnectorBottom.png'),
           })
         )
         break
@@ -374,9 +374,9 @@ map.forEach((row, i) => {
           new Boundary({
             position: {
               x: j * Boundary.width,
-              y: i * Boundary.height
+              y: i * Boundary.height,
             },
-            image: createImage('./img/pipeConnectorLeft.png')
+            image: createImage('./img/pipeConnectorLeft.png'),
           })
         )
         break
@@ -385,8 +385,8 @@ map.forEach((row, i) => {
           new Pellet({
             position: {
               x: j * Boundary.width + Boundary.width / 2,
-              y: i * Boundary.height + Boundary.height / 2
-            }
+              y: i * Boundary.height + Boundary.height / 2,
+            },
           })
         )
         break
@@ -396,8 +396,8 @@ map.forEach((row, i) => {
           new PowerUp({
             position: {
               x: j * Boundary.width + Boundary.width / 2,
-              y: i * Boundary.height + Boundary.height / 2
-            }
+              y: i * Boundary.height + Boundary.height / 2,
+            },
           })
         )
         break
@@ -433,10 +433,10 @@ function animate() {
             ...player,
             velocity: {
               x: 0,
-              y: -5
-            }
+              y: -5,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         player.velocity.y = 0
@@ -454,10 +454,10 @@ function animate() {
             ...player,
             velocity: {
               x: -5,
-              y: 0
-            }
+              y: 0,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         player.velocity.x = 0
@@ -475,10 +475,10 @@ function animate() {
             ...player,
             velocity: {
               x: 0,
-              y: 5
-            }
+              y: 5,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         player.velocity.y = 0
@@ -496,10 +496,10 @@ function animate() {
             ...player,
             velocity: {
               x: 5,
-              y: 0
-            }
+              y: 0,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         player.velocity.x = 0
@@ -586,7 +586,7 @@ function animate() {
     if (
       circleCollidesWithRectangle({
         circle: player,
-        rectangle: boundary
+        rectangle: boundary,
       })
     ) {
       player.velocity.x = 0
@@ -607,10 +607,10 @@ function animate() {
             ...ghost,
             velocity: {
               x: ghost.speed,
-              y: 0
-            }
+              y: 0,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         collisions.push('right')
@@ -623,10 +623,10 @@ function animate() {
             ...ghost,
             velocity: {
               x: -ghost.speed,
-              y: 0
-            }
+              y: 0,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         collisions.push('left')
@@ -639,10 +639,10 @@ function animate() {
             ...ghost,
             velocity: {
               x: 0,
-              y: -ghost.speed
-            }
+              y: -ghost.speed,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         collisions.push('up')
@@ -655,10 +655,10 @@ function animate() {
             ...ghost,
             velocity: {
               x: 0,
-              y: ghost.speed
-            }
+              y: ghost.speed,
+            },
           },
-          rectangle: boundary
+          rectangle: boundary,
         })
       ) {
         collisions.push('down')
