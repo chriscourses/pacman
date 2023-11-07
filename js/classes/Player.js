@@ -1,3 +1,5 @@
+const SPEED = 200
+
 class Player {
   constructor({ position, velocity }) {
     this.position = position
@@ -6,6 +8,10 @@ class Player {
     this.radians = 0.75
     this.openRate = 0.12
     this.rotation = 0
+    this.desiredDirection = {
+      x: 0,
+      y: 0,
+    }
   }
 
   draw() {
@@ -19,7 +25,7 @@ class Player {
       this.position.y,
       this.radius,
       this.radians,
-      Math.PI * 2 - this.radians
+      Math.PI * 2 - this.radians,
     )
     c.lineTo(this.position.x, this.position.y)
     c.fillStyle = 'yellow'
@@ -28,102 +34,96 @@ class Player {
     c.restore()
   }
 
-  moveUp(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i]
+  move(direction) {
+    switch (direction) {
+      case 'up':
+        this.desiredDirection = {
+          x: 0,
+          y: -1,
+        }
+        break
+      case 'down':
+        this.desiredDirection = {
+          x: 0,
+          y: 1,
+        }
+        break
+      case 'left':
+        this.desiredDirection = {
+          x: -1,
+          y: 0,
+        }
+        break
+      case 'right':
+        this.desiredDirection = {
+          x: 1,
+          y: 0,
+        }
+        break
+    }
+  }
+
+  collision(boundaries) {
+    for (const boundary of boundaries) {
+      if (
+        circleCollidesWithRectangle({
+          circle: this,
+          rectangle: boundary,
+        })
+      ) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  snapToGrid() {
+    const CELL_SIZE = 20
+    this.position = {
+      x: Math.round(this.position.x / CELL_SIZE) * CELL_SIZE,
+      y: Math.round(this.position.y / CELL_SIZE) * CELL_SIZE,
+    }
+  }
+
+  isValidMove(boundaries) {
+    const PIXEL_BUFFER = 5
+    for (const boundary of boundaries) {
       if (
         circleCollidesWithRectangle({
           circle: {
             ...this,
             velocity: {
-              x: 0,
-              y: -5,
+              x: this.desiredDirection.x * PIXEL_BUFFER,
+              y: this.desiredDirection.y * PIXEL_BUFFER,
             },
           },
           rectangle: boundary,
         })
       ) {
-        this.velocity.y = 0
-        break
-      } else {
-        this.velocity.y = -5
+        return false
       }
     }
+
+    return true
   }
 
-  moveLeft(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i]
-      if (
-        circleCollidesWithRectangle({
-          circle: {
-            ...this,
-            velocity: {
-              x: -5,
-              y: 0,
-            },
-          },
-          rectangle: boundary,
-        })
-      ) {
-        this.velocity.x = 0
-        break
-      } else {
-        this.velocity.x = -5
-      }
-    }
-  }
-
-  moveDown(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i]
-      if (
-        circleCollidesWithRectangle({
-          circle: {
-            ...this,
-            velocity: {
-              x: 0,
-              y: 5,
-            },
-          },
-          rectangle: boundary,
-        })
-      ) {
-        this.velocity.y = 0
-        break
-      } else {
-        this.velocity.y = 5
-      }
-    }
-  }
-
-  moveRight(boundaries) {
-    for (let i = 0; i < boundaries.length; i++) {
-      const boundary = boundaries[i]
-      if (
-        circleCollidesWithRectangle({
-          circle: {
-            ...this,
-            velocity: {
-              x: 5,
-              y: 0,
-            },
-          },
-          rectangle: boundary,
-        })
-      ) {
-        this.velocity.x = 0
-        break
-      } else {
-        this.velocity.x = 5
-      }
-    }
-  }
-
-  update() {
+  update(delta, boundaries) {
     this.draw()
-    this.position.x += this.velocity.x
-    this.position.y += this.velocity.y
+
+    if (this.isValidMove(boundaries)) {
+      this.velocity.x = this.desiredDirection.x
+      this.velocity.y = this.desiredDirection.y
+    }
+
+    if (this.collision(boundaries)) {
+      this.velocity.x = 0
+      this.velocity.y = 0
+      this.snapToGrid()
+    } else {
+      this.position.x += this.velocity.x * delta * SPEED
+      this.position.y += this.velocity.y * delta * SPEED
+    }
 
     if (this.radians < 0 || this.radians > 0.75) this.openRate = -this.openRate
 

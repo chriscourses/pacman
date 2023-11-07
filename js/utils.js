@@ -1,5 +1,5 @@
 function circleCollidesWithRectangle({ circle, rectangle }) {
-  const padding = Boundary.width / 2 - circle.radius - 1
+  const padding = Boundary.width / 2 - circle.radius - 2
   return (
     circle.position.y - circle.radius + circle.velocity.y <=
       rectangle.position.y + rectangle.height + padding &&

@@ -10,27 +10,27 @@ const pellets = []
 
 const powerUps = []
 const ghosts = [
-  new Ghost({
-    position: {
-      x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height + Boundary.height / 2,
-    },
-    velocity: {
-      x: Ghost.speed,
-      y: 0,
-    },
-  }),
-  new Ghost({
-    position: {
-      x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height * 3 + Boundary.height / 2,
-    },
-    velocity: {
-      x: Ghost.speed,
-      y: 0,
-    },
-    color: 'pink',
-  }),
+  // new Ghost({
+  //   position: {
+  //     x: Boundary.width * 6 + Boundary.width / 2,
+  //     y: Boundary.height + Boundary.height / 2,
+  //   },
+  //   velocity: {
+  //     x: Ghost.speed,
+  //     y: 0,
+  //   },
+  // }),
+  // new Ghost({
+  //   position: {
+  //     x: Boundary.width * 6 + Boundary.width / 2,
+  //     y: Boundary.height * 3 + Boundary.height / 2,
+  //   },
+  //   velocity: {
+  //     x: Ghost.speed,
+  //     y: 0,
+  //   },
+  //   color: 'pink',
+  // }),
 ]
 const player = new Player({
   position: {
@@ -60,6 +60,7 @@ const keys = {
 let lastKey = ''
 let score = 0
 let animationId
+let prevMs = Date.now()
 
 const boundaries = generateBoundaries()
 
@@ -67,10 +68,14 @@ function animate() {
   animationId = requestAnimationFrame(animate)
   c.clearRect(0, 0, canvas.width, canvas.height)
 
-  if (keys.w.pressed && lastKey === 'w') player.moveUp(boundaries)
-  else if (keys.a.pressed && lastKey === 'a') player.moveLeft(boundaries)
-  else if (keys.s.pressed && lastKey === 's') player.moveDown(boundaries)
-  else if (keys.d.pressed && lastKey === 'd') player.moveRight(boundaries)
+  const currentMs = Date.now()
+  const delta = (currentMs - prevMs) / 1000
+  prevMs = currentMs
+
+  if (keys.w.pressed && lastKey === 'w') player.move('up')
+  else if (keys.a.pressed && lastKey === 'a') player.move('left')
+  else if (keys.s.pressed && lastKey === 's') player.move('down')
+  else if (keys.d.pressed && lastKey === 'd') player.move('right')
 
   // detect collision between ghosts and player
   for (let i = ghosts.length - 1; 0 <= i; i--) {
@@ -79,7 +84,7 @@ function animate() {
     if (
       Math.hypot(
         ghost.position.x - player.position.x,
-        ghost.position.y - player.position.y
+        ghost.position.y - player.position.y,
       ) <
       ghost.radius + player.radius
     ) {
@@ -107,7 +112,7 @@ function animate() {
     if (
       Math.hypot(
         powerUp.position.x - player.position.x,
-        powerUp.position.y - player.position.y
+        powerUp.position.y - player.position.y,
       ) <
       powerUp.radius + player.radius
     ) {
@@ -132,7 +137,7 @@ function animate() {
     if (
       Math.hypot(
         pellet.position.x - player.position.x,
-        pellet.position.y - player.position.y
+        pellet.position.y - player.position.y,
       ) <
       pellet.radius + player.radius
     ) {
@@ -144,18 +149,8 @@ function animate() {
 
   boundaries.forEach((boundary) => {
     boundary.draw()
-
-    if (
-      circleCollidesWithRectangle({
-        circle: player,
-        rectangle: boundary,
-      })
-    ) {
-      player.velocity.x = 0
-      player.velocity.y = 0
-    }
   })
-  player.update()
+  player.update(delta, boundaries)
 
   ghosts.forEach((ghost) => {
     ghost.update()
@@ -238,17 +233,11 @@ function animate() {
       else if (ghost.velocity.y < 0) ghost.prevCollisions.push('up')
       else if (ghost.velocity.y > 0) ghost.prevCollisions.push('down')
 
-      console.log(collisions)
-      console.log(ghost.prevCollisions)
-
       const pathways = ghost.prevCollisions.filter((collision) => {
         return !collisions.includes(collision)
       })
-      console.log({ pathways })
 
       const direction = pathways[Math.floor(Math.random() * pathways.length)]
-
-      console.log({ direction })
 
       switch (direction) {
         case 'down':
