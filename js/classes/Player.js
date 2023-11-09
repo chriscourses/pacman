@@ -1,4 +1,5 @@
 const SPEED = 200
+const CHOMP_RATE = 30
 
 class Player {
   constructor({ position, velocity }) {
@@ -125,8 +126,9 @@ class Player {
       this.position.y += this.velocity.y * delta * SPEED
     }
 
+    // chomp
     if (this.radians < 0 || this.radians > 0.75) this.openRate = -this.openRate
-
-    this.radians += this.openRate
+    this.radians = Math.max(0, Math.min(this.radians, 0.75))
+    this.radians += this.openRate * delta * CHOMP_RATE
   }
 }
