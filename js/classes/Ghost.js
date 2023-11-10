@@ -1,7 +1,7 @@
 const GHOST_SPEED = 75
 class Ghost {
   static speed = 1
-  constructor({ position, velocity, color = 'red' }) {
+  constructor({ position, velocity, color = 'red', imgSrc }) {
     this.position = position
     this.velocity = velocity
     this.radius = 15
@@ -10,14 +10,47 @@ class Ghost {
     this.speed = 2
     this.scared = false
     this.previousValidMoves = []
+
+    this.imageLoaded = false
+    this.image = new Image()
+    this.image.src = imgSrc
+    this.image.onload = () => {
+      this.imageLoaded = true
+    }
+    this.maxFrames = 8
+    this.currentFrame = 0
+    this.elapsedTime = 0
   }
 
   draw() {
-    c.beginPath()
-    c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
-    c.fillStyle = this.scared ? 'blue' : this.color
-    c.fill()
-    c.closePath()
+    // c.beginPath()
+    // c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2)
+    // c.fillStyle = this.scared ? 'blue' : this.color
+    // c.fill()
+    // c.closePath()
+
+    if (this.imageLoaded) {
+      const scaledWidth = this.image.width * 2
+      const scaledHeight = this.image.height * 2
+
+      const cropbox = {
+        x: 0,
+        y: 0,
+        width: this.image.width / this.maxFrames,
+        height: this.image.height,
+      }
+      c.drawImage(
+        this.image,
+        cropbox.width * this.currentFrame,
+        cropbox.y,
+        cropbox.width,
+        cropbox.height,
+        this.position.x - cropbox.width,
+        this.position.y - cropbox.height,
+        scaledWidth / this.maxFrames,
+        scaledHeight,
+      )
+    }
   }
 
   collision(boundaries) {
@@ -90,8 +123,24 @@ class Ghost {
     return validMoves
   }
 
+  updateFrames(delta) {
+    this.elapsedTime += delta
+
+    const GHOST_ANIMATION_RATE = 1000 / 30 / 1000
+    if (this.elapsedTime > GHOST_ANIMATION_RATE) {
+      this.elapsedTime = 0
+      this.currentFrame++
+
+      if (this.currentFrame >= this.maxFrames) {
+        this.currentFrame = 0
+      }
+    }
+  }
+
   update(delta, boundaries) {
     this.draw()
+    this.updateFrames(delta)
+
     const validMoves = this.gatherValidMoves(boundaries)
 
     if (
