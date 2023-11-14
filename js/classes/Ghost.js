@@ -1,7 +1,7 @@
 const GHOST_SPEED = 75
 class Ghost {
   static speed = 1
-  constructor({ position, velocity, color = 'red', imgSrc }) {
+  constructor({ position, velocity, color = 'red', imgSrc, state }) {
     this.position = position
     this.velocity = velocity
     this.radius = 15
@@ -20,6 +20,7 @@ class Ghost {
     this.maxFrames = 8
     this.currentFrame = 0
     this.elapsedTime = 0
+    this.state = state
   }
 
   draw() {
@@ -137,9 +138,28 @@ class Ghost {
     }
   }
 
+  enterGame() {
+    this.state = 'enteringGame'
+
+    const timeline = gsap.timeline()
+
+    timeline.to(this.position, {
+      x: Boundary.width * 5 + Boundary.width / 2,
+    })
+
+    timeline.to(this.position, {
+      y: Boundary.height * 5 + Boundary.height / 2,
+      onComplete: () => {
+        this.state = 'active'
+      },
+    })
+  }
+
   update(delta, boundaries) {
     this.draw()
     this.updateFrames(delta)
+
+    if (this.state !== 'active') return
 
     const validMoves = this.gatherValidMoves(boundaries)
 

@@ -12,25 +12,48 @@ const powerUps = []
 const ghosts = [
   new Ghost({
     position: {
-      x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height + Boundary.height / 2,
+      x: Boundary.width * 5 + Boundary.width / 2,
+      y: Boundary.height * 5 + Boundary.height / 2,
     },
     velocity: {
-      x: Ghost.speed,
+      x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
       y: 0,
     },
     imgSrc: './img/sprites/orangeGhost.png',
+    state: 'active',
+  }),
+  new Ghost({
+    position: {
+      x: Boundary.width * 5 + Boundary.width / 2,
+      y: Boundary.height * 6 + Boundary.height / 2,
+    },
+    velocity: {
+      x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
+      y: 0,
+    },
+    imgSrc: './img/sprites/greenGhost.png',
+  }),
+  new Ghost({
+    position: {
+      x: Boundary.width * 4 + Boundary.width / 2,
+      y: Boundary.height * 6 + Boundary.height / 2,
+    },
+    velocity: {
+      x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
+      y: 0,
+    },
+    imgSrc: './img/sprites/redGhost.png',
   }),
   new Ghost({
     position: {
       x: Boundary.width * 6 + Boundary.width / 2,
-      y: Boundary.height * 3 + Boundary.height / 2,
+      y: Boundary.height * 6 + Boundary.height / 2,
     },
     velocity: {
-      x: Ghost.speed,
+      x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
       y: 0,
     },
-    imgSrc: './img/sprites/greenGhost.png',
+    imgSrc: './img/sprites/yellowGhost.png',
   }),
 ]
 const player = new Player({
@@ -62,6 +85,8 @@ let lastKey = ''
 let score = 0
 let animationId
 let prevMs = Date.now()
+let accumulatedTime = 0
+const ghostReleaseIntervals = [0, 7, 14, 21]
 
 const boundaries = generateBoundaries()
 
@@ -72,6 +97,8 @@ function animate() {
   const currentMs = Date.now()
   const delta = (currentMs - prevMs) / 1000
   prevMs = currentMs
+
+  accumulatedTime += delta
 
   if (keys.w.pressed && lastKey === 'w') player.move('up')
   else if (keys.a.pressed && lastKey === 'a') player.move('left')
@@ -153,8 +180,12 @@ function animate() {
   })
   player.update(delta, boundaries)
 
-  ghosts.forEach((ghost) => {
+  ghosts.forEach((ghost, index) => {
     ghost.update(delta, boundaries)
+
+    if (ghost.state === 'active' || ghost.state === 'enteringGame') return
+
+    if (accumulatedTime > ghostReleaseIntervals[index]) ghost.enterGame()
   })
 
   if (player.velocity.x > 0) player.rotation = 0

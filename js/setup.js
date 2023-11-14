@@ -3,13 +3,13 @@ function generateBoundaries() {
     ['1', '-', '-', '-', '-', '-', '-', '-', '-', '-', '2'],
     ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
     ['|', '.', 'b', '.', '[', '7', ']', '.', 'b', '.', '|'],
-    ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
-    ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
-    ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
-    ['|', '.', 'b', '.', '[', '+', ']', '.', 'b', '.', '|'],
-    ['|', '.', '.', '.', '.', '_', '.', '.', '.', '.', '|'],
-    ['|', '.', '[', ']', '.', '.', '.', '[', ']', '.', '|'],
-    ['|', '.', '.', '.', '.', '^', '.', '.', '.', '.', '|'],
+    ['|', '.', '.', '.', '.', '|', '.', '.', '.', '.', '|'],
+    ['|', '.', '[', ']', '.', '_', '.', '[', ']', '.', '|'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+    ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+    ['|', '.', '[', ']', '.', '^', '.', '[', ']', '.', '|'],
+    ['|', '.', '.', '.', '.', '|', '.', '.', '.', '.', '|'],
     ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
     ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
     ['4', '-', '-', '-', '-', '-', '-', '-', '-', '-', '3'],
@@ -28,7 +28,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/pipeHorizontal.png'),
-            })
+            }),
           )
           break
         case '|':
@@ -39,7 +39,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/pipeVertical.png'),
-            })
+            }),
           )
           break
         case '1':
@@ -50,7 +50,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/pipeCorner1.png'),
-            })
+            }),
           )
           break
         case '2':
@@ -61,7 +61,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/pipeCorner2.png'),
-            })
+            }),
           )
           break
         case '3':
@@ -72,7 +72,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/pipeCorner3.png'),
-            })
+            }),
           )
           break
         case '4':
@@ -83,7 +83,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/pipeCorner4.png'),
-            })
+            }),
           )
           break
         case 'b':
@@ -94,7 +94,7 @@ function generateBoundaries() {
                 y: Boundary.height * i,
               },
               image: createImage('./img/block.png'),
-            })
+            }),
           )
           break
         case '[':
@@ -105,7 +105,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               image: createImage('./img/capLeft.png'),
-            })
+            }),
           )
           break
         case ']':
@@ -116,7 +116,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               image: createImage('./img/capRight.png'),
-            })
+            }),
           )
           break
         case '_':
@@ -127,7 +127,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               image: createImage('./img/capBottom.png'),
-            })
+            }),
           )
           break
         case '^':
@@ -138,7 +138,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               image: createImage('./img/capTop.png'),
-            })
+            }),
           )
           break
         case '+':
@@ -149,7 +149,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               image: createImage('./img/pipeCross.png'),
-            })
+            }),
           )
           break
         case '5':
@@ -161,7 +161,7 @@ function generateBoundaries() {
               },
               color: 'blue',
               image: createImage('./img/pipeConnectorTop.png'),
-            })
+            }),
           )
           break
         case '6':
@@ -173,7 +173,7 @@ function generateBoundaries() {
               },
               color: 'blue',
               image: createImage('./img/pipeConnectorRight.png'),
-            })
+            }),
           )
           break
         case '7':
@@ -185,7 +185,7 @@ function generateBoundaries() {
               },
               color: 'blue',
               image: createImage('./img/pipeConnectorBottom.png'),
-            })
+            }),
           )
           break
         case '8':
@@ -196,7 +196,7 @@ function generateBoundaries() {
                 y: i * Boundary.height,
               },
               image: createImage('./img/pipeConnectorLeft.png'),
-            })
+            }),
           )
           break
         case '.':
@@ -206,7 +206,7 @@ function generateBoundaries() {
                 x: j * Boundary.width + Boundary.width / 2,
                 y: i * Boundary.height + Boundary.height / 2,
               },
-            })
+            }),
           )
           break
 
@@ -217,7 +217,7 @@ function generateBoundaries() {
                 x: j * Boundary.width + Boundary.width / 2,
                 y: i * Boundary.height + Boundary.height / 2,
               },
-            })
+            }),
           )
           break
       }
