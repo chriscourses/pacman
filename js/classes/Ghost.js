@@ -155,12 +155,7 @@ class Ghost {
     })
   }
 
-  update(delta, boundaries) {
-    this.draw()
-    this.updateFrames(delta)
-
-    if (this.state !== 'active') return
-
+  move(delta, boundaries) {
     const validMoves = this.gatherValidMoves(boundaries)
 
     if (
@@ -185,5 +180,16 @@ class Ghost {
     }
 
     this.previousValidMoves = validMoves
+  }
+
+  update(delta, boundaries) {
+    this.draw()
+    this.updateFrames(delta)
+
+    switch (this.state) {
+      case 'active':
+        this.move(delta, boundaries)
+        break
+    }
   }
 }
