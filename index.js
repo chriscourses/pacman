@@ -13,6 +13,7 @@ const pellets = []
 const powerUps = []
 let ghosts = []
 let player = {}
+let items = []
 
 const keys = {
   w: {
@@ -187,6 +188,25 @@ function animate() {
     }
   }
 
+  // for our items
+  for (let i = items.length - 1; 0 <= i; i--) {
+    const item = items[i]
+    item.draw()
+
+    // player collides with item
+    if (
+      Math.hypot(
+        item.position.x - player.position.x,
+        item.position.y - player.position.y,
+      ) <
+      item.radius + player.radius
+    ) {
+      items.splice(i, 1)
+      score += 50
+      scoreEl.innerHTML = score
+    }
+  }
+
   // touch pellets here
   for (let i = pellets.length - 1; 0 <= i; i--) {
     const pellet = pellets[i]
@@ -208,6 +228,7 @@ function animate() {
   boundaries.forEach((boundary) => {
     boundary.draw()
   })
+
   player.update(delta, boundaries)
 
   ghosts.forEach((ghost, index) => {
