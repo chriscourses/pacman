@@ -3,8 +3,10 @@ const c = canvas.getContext('2d')
 
 const scoreEl = document.querySelector('#scoreEl')
 
-canvas.width = innerWidth
-canvas.height = innerHeight
+const MAP_ROWS = 13
+const MAP_COLUMNS = 11
+canvas.width = Boundary.width * MAP_COLUMNS
+canvas.height = Boundary.height * MAP_ROWS
 
 const pellets = []
 

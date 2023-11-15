@@ -129,6 +129,19 @@ class Player {
     if (this.radians < 0 || this.radians > 0.75) this.openRate = -this.openRate
     this.radians = Math.max(0, Math.min(this.radians, 0.75))
     this.radians += this.openRate * delta * CHOMP_RATE
+
+    this.checkTransportOnVerticalAxis()
+    this.checkTransportOnHorizontalAxis()
+  }
+
+  checkTransportOnVerticalAxis() {
+    if (this.position.y + this.radius < 0) this.position.y = canvas.height
+    else if (this.position.y - this.radius > canvas.height) this.position.y = 0
+  }
+
+  checkTransportOnHorizontalAxis() {
+    if (this.position.x + this.radius < 0) this.position.x = canvas.width
+    else if (this.position.x - this.radius > canvas.width) this.position.x = 0
   }
 
   die() {
