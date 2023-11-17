@@ -3,13 +3,36 @@ const c = canvas.getContext('2d')
 
 const scoreEl = document.querySelector('#scoreEl')
 
-const MAP_ROWS = 13
-const MAP_COLUMNS = 11
-canvas.width = Boundary.width * MAP_COLUMNS
-canvas.height = Boundary.height * MAP_ROWS
+const maps = [
+  [
+    ['1', '-', '-', '-', ']', '.', '[', '-', '-', '-', '2'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', 'I', '|'],
+    ['|', '.', 'b', '.', '[', '7', ']', '.', 'b', '.', '|'],
+    ['|', '.', '.', '.', '.', '|', '.', '.', '.', '.', '|'],
+    ['|', '.', '[', ']', '.', '_', '.', '[', ']', '.', '|'],
+    ['_', '.', '.', '.', '.', '.', '.', '.', '.', '.', '_'],
+    ['.', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '.'],
+    ['^', '.', '.', '.', '.', '.', '.', '.', '.', '.', '^'],
+    ['|', '.', '[', ']', '.', '^', '.', '[', ']', '.', '|'],
+    ['|', '.', '.', '.', '.', '|', '.', '.', '.', '.', '|'],
+    ['|', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '|'],
+    ['|', 'I', '.', '.', '.', '.', '.', '.', '.', 'p', '|'],
+    ['4', '-', '-', '-', ']', '.', '[', '-', '-', '-', '3'],
+  ],
+  [
+    ['1', '-', '-', '-', ']', '.', '[', '-', '-', '-', '2'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+    ['|', '.', '[', ']', '.', 'b', '.', '[', ']', '.', '|'],
+    ['_', '.', '.', '.', '.', '.', '.', '.', '.', '.', '_'],
+    ['.', '.', 'b', '.', '[', '5', ']', '.', 'b', '.', '.'],
+    ['^', '.', '.', '.', '.', '.', '.', '.', '.', '.', '^'],
+    ['|', '.', '[', ']', '.', 'b', '.', '[', ']', '.', '|'],
+    ['|', '.', '.', '.', '.', '.', '.', '.', '.', '.', '|'],
+    ['4', '-', '-', '-', ']', '.', '[', '-', '-', '-', '3'],
+  ],
+]
 
 const pellets = []
-
 const powerUps = []
 let ghosts = []
 let player = {}
@@ -36,7 +59,46 @@ let animationId
 let prevMs = Date.now()
 let accumulatedTime = 0
 const ghostReleaseIntervals = [0, 7, 14, 21]
-const boundaries = generateBoundaries()
+let currentLevelIndex = 1
+let boundaries = generateBoundaries(currentLevelIndex, maps)
+const ghostPositions = [
+  [
+    {
+      x: Boundary.width * 5 + Boundary.width / 2,
+      y: Boundary.height * 5 + Boundary.height / 2,
+    },
+    {
+      x: Boundary.width * 5 + Boundary.width / 2,
+      y: Boundary.height * 6 + Boundary.height / 2,
+    },
+    {
+      x: Boundary.width * 4 + Boundary.width / 2,
+      y: Boundary.height * 6 + Boundary.height / 2,
+    },
+    {
+      x: Boundary.width * 6 + Boundary.width / 2,
+      y: Boundary.height * 6 + Boundary.height / 2,
+    },
+  ],
+  [
+    {
+      x: Boundary.width * 5 + Boundary.width / 2,
+      y: Boundary.height * 3 + Boundary.height / 2,
+    },
+    {
+      x: Boundary.width * 5 + Boundary.width / 2,
+      y: Boundary.height * 4 + Boundary.height / 2,
+    },
+    {
+      x: Boundary.width * 4 + Boundary.width / 2,
+      y: Boundary.height * 4 + Boundary.height / 2,
+    },
+    {
+      x: Boundary.width * 6 + Boundary.width / 2,
+      y: Boundary.height * 4 + Boundary.height / 2,
+    },
+  ],
+]
 
 const game = {
   init() {
@@ -53,10 +115,7 @@ const game = {
     })
     ghosts = [
       new Ghost({
-        position: {
-          x: Boundary.width * 5 + Boundary.width / 2,
-          y: Boundary.height * 5 + Boundary.height / 2,
-        },
+        position: ghostPositions[currentLevelIndex][0],
         velocity: {
           x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
           y: 0,
@@ -65,10 +124,7 @@ const game = {
         state: 'active',
       }),
       new Ghost({
-        position: {
-          x: Boundary.width * 5 + Boundary.width / 2,
-          y: Boundary.height * 6 + Boundary.height / 2,
-        },
+        position: ghostPositions[currentLevelIndex][1],
         velocity: {
           x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
           y: 0,
@@ -76,10 +132,7 @@ const game = {
         imgSrc: './img/sprites/greenGhost.png',
       }),
       new Ghost({
-        position: {
-          x: Boundary.width * 4 + Boundary.width / 2,
-          y: Boundary.height * 6 + Boundary.height / 2,
-        },
+        position: ghostPositions[currentLevelIndex][2],
         velocity: {
           x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
           y: 0,
@@ -87,10 +140,7 @@ const game = {
         imgSrc: './img/sprites/redGhost.png',
       }),
       new Ghost({
-        position: {
-          x: Boundary.width * 6 + Boundary.width / 2,
-          y: Boundary.height * 6 + Boundary.height / 2,
-        },
+        position: ghostPositions[currentLevelIndex][3],
         velocity: {
           x: Ghost.speed * (Math.random() < 0.5) ? -1 : 1,
           y: 0,
@@ -157,9 +207,19 @@ function animate() {
   }
 
   // win condition goes here
-  if (pellets.length === 0) {
-    console.log('you win')
-    cancelAnimationFrame(animationId)
+  if (pellets.length === 0 && player.state === 'active') {
+    player.state = 'paused'
+    ghosts.forEach((ghost) => {
+      ghost.state = 'paused'
+    })
+
+    setTimeout(() => {
+      currentLevelIndex++
+      if (currentLevelIndex > maps.length - 1) currentLevelIndex = 0
+      boundaries = generateBoundaries(currentLevelIndex, maps)
+      game.init()
+      game.initStart()
+    }, 1000)
   }
 
   // power ups go
@@ -235,7 +295,7 @@ function animate() {
     ghost.update(delta, boundaries)
 
     if (accumulatedTime > ghostReleaseIntervals[index] && !ghost.state)
-      ghost.enterGame()
+      ghost.enterGame(ghostPositions[currentLevelIndex][1])
   })
 
   if (player.velocity.x > 0) player.rotation = 0

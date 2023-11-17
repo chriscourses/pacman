@@ -2,7 +2,7 @@ const GHOST_SPEED = 75
 class Ghost {
   static speed = 1
   constructor({ position, velocity, color = 'red', imgSrc, state }) {
-    this.position = position
+    this.position = JSON.parse(JSON.stringify(position))
     this.velocity = velocity
     this.radius = 15
     this.color = color
@@ -138,17 +138,17 @@ class Ghost {
     }
   }
 
-  enterGame() {
+  enterGame(cageCenter) {
     this.state = 'enteringGame'
 
     const timeline = gsap.timeline()
 
     timeline.to(this.position, {
-      x: Boundary.width * 5 + Boundary.width / 2,
+      x: cageCenter.x,
     })
 
     timeline.to(this.position, {
-      y: Boundary.height * 5 + Boundary.height / 2,
+      y: cageCenter.y - Boundary.height,
       onComplete: () => {
         this.state = 'active'
       },
