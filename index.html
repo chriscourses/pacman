@@ -1,21 +1,59 @@
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Changa+One&family=Press+Start+2P&display=swap"
+  rel="stylesheet"
+/>
+
 <style>
   body {
     margin: 0;
     background-color: black;
     padding: 10px 20px;
+    font-family: 'Press Start 2P', sans-serif;
   }
 </style>
-<p
-  style="
-    color: white;
-    font-family: sans-serif;
-    font-size: 14px;
-    margin-bottom: 6px;
-  "
->
+<p style="color: white; font-size: 14px; margin-bottom: 6px">
   <span>Score: </span><span id="scoreEl">0</span>
 </p>
-<canvas></canvas>
+
+<div class="relative">
+  <div class="absolute inset-0 flex flex-col items-center justify-center">
+    <div
+      id="startScreen"
+      class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full"
+    >
+      <!-- max-width: 300px; width: 100% -->
+      <!-- xs sm base lg xl 2xl -->
+      <h1 class="text-white text-3xl mb-2">PacMan</h1>
+      <button
+        id="startButton"
+        class="text-black text-sm bg-yellow-400 px-4 py-2 rounded-full hover:bg-yellow-300"
+      >
+        Start Game
+      </button>
+    </div>
+    <!-- ready tag -->
+    <div
+      id="readyTag"
+      class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full hidden"
+    >
+      <h1 class="text-white text-xl">Ready?</h1>
+    </div>
+    <!-- /ready tag -->
+    <!-- go tag -->
+    <div
+      id="goTag"
+      class="bg-black/75 p-4 border-4 border-yellow-400 rounded text-center max-w-xs w-full hidden"
+    >
+      <h1 class="text-white text-xl">Go!</h1>
+    </div>
+    <!-- /go tag -->
+  </div>
+  <canvas style="display: block; margin: 0 auto"></canvas>
+</div>
+
+<script src="https://cdn.tailwindcss.com"></script>
 <script
   src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"
   integrity="sha512-16esztaSRplJROstbIIdwX3N97V1+pZvV33ABoG1H2OyTttBxEGkTsoIVsiP1iaTtM8b3+hu2kB6pQ4Clr5yug=="

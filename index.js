@@ -61,7 +61,7 @@ let animationId
 let prevMs = Date.now()
 let accumulatedTime = 0
 let ghostReleaseIntervals = [0, 7, 14, 21]
-let currentLevelIndex = 1
+let currentLevelIndex = 0
 let boundaries = generateBoundaries(currentLevelIndex, maps)
 const ghostPositions = [
   [
@@ -191,9 +191,16 @@ const game = {
       game.initStart()
     }, 1000)
   },
+  pause() {
+    player.state = 'paused'
+    ghosts.forEach((ghost) => {
+      ghost.state = 'paused'
+    })
+  },
 }
 
 game.init()
+game.pause()
 
 function animate() {
   animationId = requestAnimationFrame(animate)
@@ -322,3 +329,17 @@ function animate() {
 } // end of animate()
 
 animate()
+
+document.querySelector('#startButton').addEventListener('click', (e) => {
+  document.querySelector('#startScreen').style.display = 'none'
+  document.querySelector('#readyTag').style.display = 'block'
+  setTimeout(() => {
+    game.init()
+    document.querySelector('#readyTag').style.display = 'none'
+    document.querySelector('#goTag').style.display = 'block'
+    gsap.to('#goTag', {
+      delay: 0.5,
+      opacity: 0,
+    })
+  }, 2000)
+})
