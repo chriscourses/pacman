@@ -1,13 +1,12 @@
-const GHOST_SPEED = 75
 class Ghost {
   static speed = 1
-  constructor({ position, velocity, color = 'red', imgSrc, state }) {
+  constructor({ position, velocity, color = 'red', imgSrc, state, speed }) {
     this.position = JSON.parse(JSON.stringify(position))
     this.velocity = velocity
     this.radius = 15
     this.color = color
     this.prevCollisions = []
-    this.speed = 2
+    this.speed = speed
     this.scared = false
     this.previousValidMoves = []
 
@@ -175,8 +174,8 @@ class Ghost {
       this.velocity.y = 0
       this.snapToGrid()
     } else {
-      this.position.x += this.velocity.x * delta * GHOST_SPEED
-      this.position.y += this.velocity.y * delta * GHOST_SPEED
+      this.position.x += this.velocity.x * delta * this.speed
+      this.position.y += this.velocity.y * delta * this.speed
     }
 
     this.previousValidMoves = validMoves

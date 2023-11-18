@@ -37,6 +37,8 @@ const powerUps = []
 let ghosts = []
 let player = {}
 let items = []
+let ghostSpeed = 75
+const GHOST_SPEED_INCREMENT = 25
 
 const keys = {
   w: {
@@ -58,7 +60,7 @@ let score = 0
 let animationId
 let prevMs = Date.now()
 let accumulatedTime = 0
-const ghostReleaseIntervals = [0, 7, 14, 21]
+let ghostReleaseIntervals = [0, 7, 14, 21]
 let currentLevelIndex = 1
 let boundaries = generateBoundaries(currentLevelIndex, maps)
 const ghostPositions = [
@@ -122,6 +124,7 @@ const game = {
         },
         imgSrc: './img/sprites/orangeGhost.png',
         state: 'active',
+        speed: ghostSpeed,
       }),
       new Ghost({
         position: ghostPositions[currentLevelIndex][1],
@@ -130,6 +133,7 @@ const game = {
           y: 0,
         },
         imgSrc: './img/sprites/greenGhost.png',
+        speed: ghostSpeed,
       }),
       new Ghost({
         position: ghostPositions[currentLevelIndex][2],
@@ -138,6 +142,7 @@ const game = {
           y: 0,
         },
         imgSrc: './img/sprites/redGhost.png',
+        speed: ghostSpeed,
       }),
       new Ghost({
         position: ghostPositions[currentLevelIndex][3],
@@ -146,6 +151,7 @@ const game = {
           y: 0,
         },
         imgSrc: './img/sprites/yellowGhost.png',
+        speed: ghostSpeed,
       }),
     ]
   },
@@ -161,6 +167,28 @@ const game = {
       ghosts[2].state = null
       ghosts[3].state = null
       player.state = 'active'
+    }, 1000)
+  },
+  nextRound() {
+    player.state = 'paused'
+    ghosts.forEach((ghost) => {
+      ghost.state = 'paused'
+    })
+
+    ghostSpeed += GHOST_SPEED_INCREMENT
+    ghostReleaseIntervals = ghostReleaseIntervals.map((interval, index) => {
+      if (index === 0) return interval
+      else if (index === 1 && interval > 1) return interval - 1
+      else if (index === 2 && interval > 2) return interval - 1
+      else if (index === 3 && interval > 3) return interval - 1
+    })
+
+    setTimeout(() => {
+      currentLevelIndex++
+      if (currentLevelIndex > maps.length - 1) currentLevelIndex = 0
+      boundaries = generateBoundaries(currentLevelIndex, maps)
+      game.init()
+      game.initStart()
     }, 1000)
   },
 }
@@ -207,19 +235,8 @@ function animate() {
   }
 
   // win condition goes here
-  if (pellets.length === 0 && player.state === 'active') {
-    player.state = 'paused'
-    ghosts.forEach((ghost) => {
-      ghost.state = 'paused'
-    })
-
-    setTimeout(() => {
-      currentLevelIndex++
-      if (currentLevelIndex > maps.length - 1) currentLevelIndex = 0
-      boundaries = generateBoundaries(currentLevelIndex, maps)
-      game.init()
-      game.initStart()
-    }, 1000)
+  if (pellets.length === 40 && player.state === 'active') {
+    game.nextRound()
   }
 
   // power ups go
