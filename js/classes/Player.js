@@ -144,14 +144,18 @@ class Player {
     else if (this.position.x - this.radius > canvas.width) this.position.x = 0
   }
 
-  die() {
+  die(lives, game) {
     this.state = 'initDeath'
     gsap.to(this, {
       radians: Math.PI - 0.00001,
       onComplete: () => {
         setTimeout(() => {
-          game.init()
-          game.initStart()
+          if (lives > 0) {
+            game.init()
+            game.initStart()
+          } else {
+            game.end()
+          }
         }, 750)
       },
     })

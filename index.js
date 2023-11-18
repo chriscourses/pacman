@@ -63,6 +63,7 @@ let accumulatedTime = 0
 let ghostReleaseIntervals = [0, 7, 14, 21]
 let currentLevelIndex = 0
 let boundaries = generateBoundaries(currentLevelIndex, maps)
+let lives = 3
 const ghostPositions = [
   [
     {
@@ -197,6 +198,17 @@ const game = {
       ghost.state = 'paused'
     })
   },
+  end() {
+    document.querySelector('#gameOverScoreLabel').innerHTML = score
+    document.querySelector('#gameOverScreen').style.display = 'block'
+  },
+  restart() {
+    currentLevelIndex = 0
+    boundaries = generateBoundaries(currentLevelIndex, maps)
+    lives = 3
+    score = 0
+    scoreEl.innerHTML = score
+  },
 }
 
 game.init()
@@ -232,7 +244,8 @@ function animate() {
       if (ghost.scared) {
         ghosts.splice(i, 1)
       } else {
-        player.die()
+        lives--
+        player.die(lives, game)
         ghosts.forEach((ghost) => {
           ghost.state = 'paused'
         })
@@ -329,6 +342,13 @@ function animate() {
 } // end of animate()
 
 animate()
+
+document.querySelector('#restartGameButton').addEventListener('click', () => {
+  document.querySelector('#gameOverScreen').style.display = 'none'
+  game.restart()
+  game.init()
+  game.initStart()
+})
 
 document.querySelector('#startButton').addEventListener('click', (e) => {
   document.querySelector('#startScreen').style.display = 'none'
