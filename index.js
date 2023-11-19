@@ -104,6 +104,7 @@ const ghostPositions = [
 ]
 
 const game = {
+  isPaused: false,
   init() {
     accumulatedTime = 0
     player = new Player({
@@ -198,9 +199,17 @@ const game = {
       ghost.state = 'paused'
     })
   },
+  resume() {
+    this.isPaused = false
+    player.state = 'active'
+    ghosts.forEach((ghost) => {
+      ghost.state = 'active'
+    })
+  },
   end() {
     document.querySelector('#gameOverScoreLabel').innerHTML = score
     document.querySelector('#gameOverScreen').style.display = 'block'
+    document.querySelector('#pauseButton').style.display = 'none'
   },
   restart() {
     currentLevelIndex = 0
@@ -208,6 +217,7 @@ const game = {
     lives = 3
     score = 0
     scoreEl.innerHTML = score
+    document.querySelector('#pauseButton').style.display = 'block'
   },
 }
 
@@ -343,6 +353,15 @@ function animate() {
 
 animate()
 
+document.querySelector('#pauseButton').addEventListener('click', () => {
+  if (game.isPaused) {
+    game.resume()
+  } else {
+    game.pause()
+    game.isPaused = true
+  }
+})
+
 document.querySelector('#restartGameButton').addEventListener('click', () => {
   document.querySelector('#gameOverScreen').style.display = 'none'
   game.restart()
@@ -357,6 +376,7 @@ document.querySelector('#startButton').addEventListener('click', (e) => {
     game.init()
     document.querySelector('#readyTag').style.display = 'none'
     document.querySelector('#goTag').style.display = 'block'
+    document.querySelector('#pauseButton').style.display = 'block'
     gsap.to('#goTag', {
       delay: 0.5,
       opacity: 0,
