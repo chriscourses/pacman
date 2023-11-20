@@ -1,14 +1,23 @@
 class Ghost {
   static speed = 1
-  constructor({ position, velocity, color = 'red', imgSrc, state, speed }) {
+  constructor({
+    position,
+    velocity,
+    color = 'red',
+    imgSrc,
+    state,
+    speed,
+    outOfCage,
+  }) {
     this.position = JSON.parse(JSON.stringify(position))
     this.velocity = velocity
     this.radius = 15
     this.color = color
     this.prevCollisions = []
     this.speed = speed
-    this.scared = false
+
     this.previousValidMoves = []
+    this.outOfCage = outOfCage
 
     this.imageLoaded = false
     this.image = new Image()
@@ -16,6 +25,30 @@ class Ghost {
     this.image.onload = () => {
       this.imageLoaded = true
     }
+
+    this.sprites = {
+      default: {
+        maxFrame: 8,
+        image: null,
+        src: imgSrc,
+        loaded: false,
+      },
+      scared: {
+        maxFrame: 8,
+        image: null,
+        src: './img/sprites/scaredGhost.png',
+        loaded: false,
+      },
+    }
+
+    for (const key in this.sprites) {
+      this.sprites[key].image = new Image()
+      this.sprites[key].image.src = this.sprites[key].src
+      this.sprites[key].image.onload = () => {
+        this.sprites[key].loaded = true
+      }
+    }
+
     this.maxFrames = 8
     this.currentFrame = 0
     this.elapsedTime = 0
@@ -138,6 +171,7 @@ class Ghost {
   }
 
   enterGame(cageCenter) {
+    this.outOfCage = true
     this.state = 'enteringGame'
 
     const timeline = gsap.timeline()
@@ -199,8 +233,19 @@ class Ghost {
     this.updateFrames(delta)
 
     switch (this.state) {
+      case 'preActive':
+        this.image = this.sprites.default.image
+        this.state = 'active'
+        break
       case 'active':
         this.move(delta, boundaries)
+        break
+      case 'scared':
+        this.move(delta, boundaries)
+        break
+      case 'preScared':
+        this.image = this.sprites.scared.image
+        this.state = 'scared'
         break
     }
   }

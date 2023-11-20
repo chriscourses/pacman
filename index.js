@@ -134,6 +134,7 @@ const game = {
         imgSrc: './img/sprites/orangeGhost.png',
         state: 'active',
         speed: ghostSpeed,
+        outOfCage: true,
       }),
       new Ghost({
         position: ghostPositions[currentLevelIndex][1],
@@ -266,7 +267,7 @@ function animate() {
         ghost.radius + player.radius &&
       player.state === 'active'
     ) {
-      if (ghost.scared) {
+      if (ghost.state === 'scared') {
         ghosts.splice(i, 1)
       } else {
         lives--
@@ -309,10 +310,10 @@ function animate() {
 
       // make ghosts scared
       ghosts.forEach((ghost) => {
-        ghost.scared = true
+        ghost.state = 'preScared'
 
         setTimeout(() => {
-          ghost.scared = false
+          ghost.state = 'preActive'
         }, 5000)
       })
     }
@@ -369,7 +370,7 @@ function animate() {
   ghosts.forEach((ghost, index) => {
     ghost.update(delta, boundaries)
 
-    if (accumulatedTime > ghostReleaseIntervals[index] && !ghost.state)
+    if (accumulatedTime > ghostReleaseIntervals[index] && !ghost.outOfCage)
       ghost.enterGame(ghostPositions[currentLevelIndex][1])
   })
 
