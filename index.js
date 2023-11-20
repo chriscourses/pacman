@@ -32,8 +32,9 @@ const maps = [
   ],
 ]
 
-const pellets = []
-const powerUps = []
+let pelletSoundIndex = 0
+let pellets = []
+let powerUps = []
 let ghosts = []
 let player = {}
 let items = []
@@ -55,6 +56,7 @@ const keys = {
   },
 }
 
+let ghostScaredSoundId
 let lastKey = ''
 let score = 0
 let animationId
@@ -106,6 +108,11 @@ const ghostPositions = [
 const game = {
   isPaused: false,
   init() {
+    Howler.stop()
+    clearTimeout(ghostScaredSoundId)
+    pellets = []
+    powerUps = []
+    items = []
     accumulatedTime = 0
     player = new Player({
       position: {
@@ -156,6 +163,8 @@ const game = {
         speed: ghostSpeed,
       }),
     ]
+
+    boundaries = generateBoundaries(currentLevelIndex, maps)
   },
   initStart() {
     player.state = 'paused'
@@ -169,9 +178,13 @@ const game = {
       ghosts[2].state = null
       ghosts[3].state = null
       player.state = 'active'
+      sound.siren.play()
     }, 1000)
   },
   nextRound() {
+    Howler.stop()
+    sound.success.play()
+
     player.state = 'paused'
     ghosts.forEach((ghost) => {
       ghost.state = 'paused'
@@ -207,6 +220,8 @@ const game = {
     })
   },
   end() {
+    Howler.stop()
+    sound.gameOver.play()
     document.querySelector('#gameOverScoreLabel').innerHTML = score
     document.querySelector('#gameOverScreen').style.display = 'block'
     document.querySelector('#pauseButton').style.display = 'none'
@@ -283,6 +298,14 @@ function animate() {
       powerUp.radius + player.radius
     ) {
       powerUps.splice(i, 1)
+      Howler.stop()
+      sound.powerUp.play()
+      sound.ghostScared.play()
+
+      ghostScaredSoundId = setTimeout(() => {
+        Howler.stop()
+        sound.siren.play()
+      }, 5000)
 
       // make ghosts scared
       ghosts.forEach((ghost) => {
@@ -308,6 +331,7 @@ function animate() {
       ) <
       item.radius + player.radius
     ) {
+      sound.cherry.play()
       items.splice(i, 1)
       score += 50
       scoreEl.innerHTML = score
@@ -326,6 +350,10 @@ function animate() {
       ) <
       pellet.radius + player.radius
     ) {
+      console.log(pelletSoundIndex)
+      sound.pellets[pelletSoundIndex].play()
+      pelletSoundIndex = pelletSoundIndex === 1 ? 0 : pelletSoundIndex + 1
+
       pellets.splice(i, 1)
       score += 10
       scoreEl.innerHTML = score
@@ -370,10 +398,12 @@ document.querySelector('#restartGameButton').addEventListener('click', () => {
 })
 
 document.querySelector('#startButton').addEventListener('click', (e) => {
+  sound.success.play()
   document.querySelector('#startScreen').style.display = 'none'
   document.querySelector('#readyTag').style.display = 'block'
   setTimeout(() => {
     game.init()
+    sound.siren.play()
     document.querySelector('#readyTag').style.display = 'none'
     document.querySelector('#goTag').style.display = 'block'
     document.querySelector('#pauseButton').style.display = 'block'
